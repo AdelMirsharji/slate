@@ -5,7 +5,6 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - shell
   - yaml
   - ini
-  - java
 
 toc_footers:
 
@@ -96,9 +95,9 @@ ThingsBoard uses database to store **entities** (devices, assets, customers, das
 # Programming languages and third-party
 ThingsBoard back-end is written in **Java**, but we also have some micro-services based on **Node.js**. ThingsBoard front-end is a **SPA** based on **Angular 9** framework.
 
-# Getting started with ThingsBoard:
+# Installing ThingsBoard:
 
-In this Guide we will explain step by step how to install ThingsBoard on Ubuntu Server!
+In this API document we will explain step by step how to install ThingsBoard on Ubuntu Server!
 
 <aside class="notice">
 To run ThingsBoard and PostgreSQL on a single machine you will need at least 1Gb of RAM. To run ThingsBoard and Cassandra on a single machine you will need at least 8Gb of RAM.
@@ -263,7 +262,7 @@ ThingsBoard is able to use various messaging systems/brokers for storing the mes
 
 In Memory queue is built-in and enabled by default. No additional configuration steps required.
 
-In this API documnet we use Memory queue!
+In this API we use Memory queue!
 
 ### Step 5. Run installation script
 Once ThingsBoard service is installed and DB configuration is updated, you can execute the script on right pannel:
