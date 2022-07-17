@@ -4,7 +4,6 @@ title: Hamta Sharif ThingsBoard API
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
   - yaml
-  - ini
 
 toc_footers:
 
@@ -25,7 +24,7 @@ meta:
 
 Welcome to the **Hamta Sharif ThingsBoard API**! You can use our API to understannd what is **ThingsBoard** and how to use this open-source IoT platform in your IoT projects.
 
-We have language bindings in Java! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+We have language bindings in shell script and YAML! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
 # Architecture
 
@@ -37,7 +36,7 @@ ThingsBoard is designed to be:
 * **Durable**: never lose your data. ThingsBoard supports various queue implementations to provide extremely high message durability.
 * **Customizable**: adding new functionality is easy with customizable widgets and rule engine nodes.
 
-The diagram below shows key system components and interfaces they provide.
+The diagram below shows key system components and interfaces thingsboard platform provide.
 
 ![Diagram-1](/images/diagram-1.png)
 ![Diagram-1_legends](/images/diagram-1_legends.png)
@@ -95,13 +94,8 @@ ThingsBoard uses database to store **entities** (devices, assets, customers, das
 # Programming languages and third-party
 ThingsBoard back-end is written in **Java**, but we also have some micro-services based on **Node.js**. ThingsBoard front-end is a **SPA** based on **Angular 9** framework.
 
-# Installing ThingsBoard:
-
-In this API document we will explain step by step how to install ThingsBoard on Ubuntu Server!
-
-<aside class="notice">
-To run ThingsBoard and PostgreSQL on a single machine you will need at least 1Gb of RAM. To run ThingsBoard and Cassandra on a single machine you will need at least 8Gb of RAM.
-</aside>
+# Bulding from source
+To build thingsboard platform from source first you should install **JAVA** and **Maven**, Thingsboard is bulid using JAVA 11 and Maven 3.1.0+.
 
 ### Step.1 Install Java 11 (OpenJDK)
 
@@ -116,7 +110,7 @@ Finally you should see something like this:
 
 After that you should configure operating system to use OpenJDK 11 by default.
 
->To configure operating system to use OpenJDK 11 by default you can run these commands
+>To configure operating system to use OpenJDK 11 by default use command below:
 
 ```shell
 sudo update-alternatives --config java
@@ -134,60 +128,294 @@ If you see results like picture below everything is fine and java installed succ
 </aside>
 ![Jdk-2](/images/Jdk-2.png)
 
-### Step.2 ThingsBoard service installation
+### Step.2 Install Maven 3.1.0+
+To install Maven 3.1.0+ on Ubuntu run command in the right panel.
 
->command to download package
-
-```shell
-wget https://github.com/thingsboard/thingsboard/releases/download/v3.3.4.1/thingsboard-3.3.4.1.deb
-```
-
->command to install ThingsBoard as a service
+>To install Maven 3.1.0+ use command below:
 
 ```shell
-sudo dpkg -i thingsboard-3.3.4.1.deb
+sudo apt-get install maven
 ```
 
-first download package whit command in the right pannel.
+![Maven-1](/images/maven-1.png)
 
-Then install ThingsBoard as a service
+If everything goes fine you should see something like this:
+![Maven-2](/images/maven-2.png)
 
-<aside class="success">
-Finally you should see something like picture below!
+Maven installation may set JAVA 7 set as **default JVM** on certain systems, To check your JVM version run commands in right panel.
+
+>To check default JVM version your system using use command below:
+
+```shell
+sudo update-alternatives --config java
+```
+
+If your system default JVM is OpenJDK 11 you should see something like this:
+![JDK-11](/images/Jdk-3.png)
+
+### Step.3 Download Thingsboard Github repository
+Use command in the right panel to download **Thingsboard source code**
+
+>Downloading Thingsboard repo and checking out to newest version:
+
+```shell
+git clone git@github.com:thingsboard/thingsboard.git
+# checkout latest release branch
+cd thingsboard/
+git checkout release-3.3
+```
+
+<aside class="notice">
+To checkout you should go to thingsboard folder you cloned!
 </aside>
 
-![ThignsBoard-1](/images/ThingsBoard-1.png)
+The result of running commands in the right panel would be like:
+![ThingsBoard-repo](/images/ThingsBoard_repo-1.png)
+![ThingsBoard-repo](/images/ThingsBoard_repo-2.png)
 
+### Step.4 Bulding 
+To build thingsboard project you can either use **Maven** in **Terminal** or do building process using **IntelliJ IDE**.
 
-### Step.3 Configure ThingsBoard Database
-ThingsBoard is able to use SQL or hybrid database approach.
-In this API document we use **PostgreSQL**!
+<aside class="warning">
+If you are using ((Iran IP location)), in bulding process you will get ((connection timeout error)) in ((Thingsboard HTTP Transport Common)) section. To solve this problem you should change your ip. (You can use instructions below to use Tor proxy to solve this problem)
+</aside>
 
-**PostgreSQL Installation**
-See command in right pannel to install PostgreSQL database.
+### Step.4.1 Instructions to change your ip (using Tor)
+The error you will see becuase of using iran ip location:
+![connection_timeout_error](/images/Connection-Timedout-error-1.png)
+![connection_timeout_error](/images/Connection-Timedout-error-2.png)
+![connection_timeout_error](/images/Connection-Timedout-error-3.png)
 
->How to install PostgreSQL using shell commands
+First you should install Tor on your system.(Use commands on the right pannel)
 
 ```shell
-#install wget if it is not already installed
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt install tor
+```
+
+**we use kalitorify**:
+
+kalitorify is a shell script which use iptables settings to create a Transparent Proxy through the Tor Network, the program also allows you to perform various checks like checking the Tor Exit Node (i.e. your public IP address when you are under Tor proxy), or if Tor has been configured correctly checking service and network settings.
+
+kalitorify github:
+https://github.com/brainfucksec/kalitorify
+
+So use commands in right panel to clone kalitorify repository from github:
+
+>Cloning kalitorify
+
+```shell
+git clone https://github.com/brainfucksec/kalitorify.git
+#go to cloned repo file
+cd kalitorigy
+#in ../kalitorify directory
+sudo make install 
+#restart your system
+reboot
+``` 
+
+Kalitorify commands list:
+
+* start transparent proxy through tor : **sudo kalitorify -t**  
+* check status of program and services: **sudo kalitorify -s**
+* restart tor service and change IP address: **sudo kalitorify --restart**
+* reset iptables and return to clearnet navigation: **sudo kalitorify -c**
+
+>Running transaprent proxy through tor: 
+
+```shell
+sudo kalitorify -t
+#to check your status
+sudo kalitorify -s
+```
+
+Now your ip problem should be solved and you should not get stuck at **Thingsboard HTTP Transport Common** build process.
+
+<aside class="warning">
+By the time this API doc is being built latest version of ThingsBoard is release-3.3, in this version bulding Thingsboard Server UI will fail cause of wrong github urls in two files: 1-../ui-ngx/package.json  2-../ui-ngx/yarn.lock. Use intructions below to solve this problem.
+</aside>
+
+### Step.4.2 Instructions to fix wrong github urls to build Thingsboard Server UI successfully
+The error you will face if these wrong github urls remain:
+![Server-ui-error](/images/wrong-github-urls-1.png)
+
+To solve this problem you can download files from this github repository: **https://github.com/thingsboard/thingsboard/pull/6298/commits/697965**
+**d3cac70b3905545a6a55a62fecf7c53200**
+
+
+>Sloving Server UI error
+
+```shell 
+#in package.json
+#swap these lines whit lines below them:
+line-49   "flot": "git://github.com/thingsboard/flot.git#0.9-work",
+line-50   "flot.curvedlines": "git://github.com/MichaelZinsmaier/CurvedLines.git#master",
+line-72   "ngx-flowchart": "git://github.com/thingsboard/ngx-flowchart.git#release/1.0.0",
+
+new-line-49   "flot": "https://github.com/thingsboard/flot.git#0.9-work",
+new-line-50   "flot.curvedlines": "https://github.com/MichaelZinsmaier/CurvedLines.git#master",
+new-line-72   "ngx-flowchart": "https://github.com/thingsboard/ngx-flowchart.git#release/1.0.0",
+
+#in yarn.lock
+#swap these lines whit lines below them:
+line-4544  "flot.curvedlines@git://github.com/MichaelZinsmaier/CurvedLines.git#master":
+line-4546   resolved "git://github.com/MichaelZinsmaier/CurvedLines.git#22ed1fc2a6ccafc816c2d07b36027cc123825c4b"
+line-4548   "flot@git://github.com/thingsboard/flot.git#0.9-work":
+line-4550   resolved "git://github.com/thingsboard/flot.git#0ff0c775db7c74e705f6c3c2bba92080a202ccd4"
+line-6640   "ngx-flowchart@git://github.com/thingsboard/ngx-flowchart.git#release/1.0.0":
+line-6642   resolved "git://github.com/thingsboard/ngx-flowchart.git#aac96f7e0490a386d58864d7819873e7c63cbb48"
+
+new-line-4544  "flot.curvedlines@https://github.com/MichaelZinsmaier/CurvedLines.git#master":
+new-line-4546   resolved "https://github.com/MichaelZinsmaier/CurvedLines.git#22ed1fc2a6ccafc816c2d07b36027cc123825c4b"
+new-line-4548   "flot@https://github.com/thingsboard/flot.git#0.9-work":
+new-line-4550   resolved "https://github.com/thingsboard/flot.git#0ff0c775db7c74e705f6c3c2bba92080a202ccd4"
+new-line-6640   "ngx-flowchart@https://github.com/thingsboard/ngx-flowchart.git#release/1.0.0":
+new-line-6642   resolved "https://github.com/thingsboard/ngx-flowchart.git#aac96f7e0490a386d58864d7819873e7c63cbb48"
+
+```
+
+or you can manually change these lines in these two files:
+
+1-package.json:
+
+**Change these lines whit lines under them**
+
+**Old lines:**
+
+**Line-49:** "flot": "git://github.com/thingsboard/flot.git#0.9-work",
+
+**Line-50:** "flot.curvedlines": "git://github.com/MichaelZinsmaier/CurvedLines.git#master",
+
+**Line-72:** "ngx-flowchart": "git://github.com/thingsboard/ngx-flowchart.git#release/1.0.0",
+
+**New lines(to replace):**
+
+**New-Line-49:** "flot": "https://github.com/thingsboard/flot.git#0.9-work",
+
+**New-Line-50:** "flot.curvedlines": "https://github.com/MichaelZinsmaier/CurvedLines.git#master",
+
+**New-Line-72:** "ngx-flowchart": "https://github.com/thingsboard/ngx-flowchart.git#release/1.0.0",
+
+2-yarn.lock:
+
+**Old lines:**
+
+**Line-4544:**  "flot.curvedlines@git://github.com/MichaelZinsmaier/CurvedLines.git#master":
+
+**Line-4546**   resolved "git://github.com/MichaelZinsmaier/CurvedLines.git#22ed1fc2a6ccafc816c2d07b36027cc123825c4b"
+
+**Line-4548**   "flot@git://github.com/thingsboard/flot.git#0.9-work":
+
+**Line-4550**   resolved "git://github.com/thingsboard/flot.git#0ff0c775db7c74e705f6c3c2bba92080a202ccd4"
+
+**Line-6640**   "ngx-flowchart@git://github.com/thingsboard/ngx-flowchart.git#release/1.0.0":
+
+**Line-6642**   resolved "git://github.com/thingsboard/ngx-flowchart.git#aac96f7e0490a386d58864d7819873e7c63cbb48"
+
+**New lines(to replace):**
+
+**New-Line-4544:**  "flot.curvedlines@https://github.com/MichaelZinsmaier/CurvedLines.git#master":
+
+**New-Line-4546**   resolved "https://github.com/MichaelZinsmaier/CurvedLines.git#22ed1fc2a6ccafc816c2d07b36027cc123825c4b"
+
+**New-Line-4548**   "flot@https://github.com/thingsboard/flot.git#0.9-work":
+
+**New-Line-4550**   resolved "https://github.com/thingsboard/flot.git#0ff0c775db7c74e705f6c3c2bba92080a202ccd4"
+
+**New-Line-6640**   "ngx-flowchart@https://github.com/thingsboard/ngx-flowchart.git#release/1.0.0":
+
+**New-Line-6642**   resolved "https://github.com/thingsboard/ngx-flowchart.git#aac96f7e0490a386d58864d7819873e7c63cbb48"
+
+Now you can start bulding process and you should not face any failure!
+
+### Step.4.3 Start Building Process Using Terminal
+Use shell script command in right panel to start building ThingsBoard.
+
+<aside class="notice">
+Run command in the right panel in terminal in the thingsboard repository you just downloaded
+</aside>
+
+>Maven terminal command to build thingsboard
+
+```shell
+mvn clean install -DskipTests
+```
+
+![Maven-terminal-1](/images/maven-terminal-1.png)
+
+**If you follow two instrucions at top to solve iran ip and wrong git urls problems your result should be like:**
+![Maven-terminal-1](/images/maven-terminal-2.png)
+![Maven-terminal-1](/images/maven-terminal-3.png)
+
+
+
+### Step.4.3 Start Building Process Using Intellij IDE
+<aside class="notice">To build thingsboard source code using Intellij IDE you should do changing ip and fixing wrong git urls (intructions are at top of this section) before this.
+</aside>
+
+to start building it using intellij go to file-->Settings-->Build, Execution, Deployment-->Maven-->runner, here check the box **Deligate IDE build/run actions to Maven** and click apply and then ok.
+
+![Intellij-maven](/images/intellij-maven-1.png)
+
+then click on green hammer to start bulding project whit Maven:
+
+![Intellij-maven](/images/intellij-maven-2.png)
+
+
+<aside class="notice">Build artifacts will be in thingsboard/application/target directory in Thingsboard folder.</aside>
+
+Building Process Took **45min** to compelete on **Lenovo ThinkPad X230**:
+
+* **Thinkspad X230 Hardware**:
+
+* Memory: 8GB
+* Processor: Intel® Core™ i5-3230M CPU @ 2.60GHz × 4
+* 320GB Hard Disk
+
+
+# Installing Thingsboard 
+
+### Step.1 Installing thingsboard from debian file
+To install thingsboard from your build output debian file go to **thingsboard/application/target**.
+
+>Command to install thingsboard from thingsboard.deb file
+
+```shell
+sudo dpkg -i thingsboard.deb
+```
+
+If your build from source code was successfull you should see a **thingsboard.deb** file in this directory.
+
+To start installing thingsboard on your system run shell scripit command in the right pannel.
+
+### Step.2 Creating Thingsboard Database
+In this API doc we use **PostgreSQL** Database.
+
+Use shell script command in the right panel to install PostgreSQL database.
+
+>PostgreSQL Installation
+
+```shell
+# install **wget** if not already installed:
 sudo apt install -y wget
-#import repository signing key
+
+# import the repository signing key:
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-#add repository contents to your system
+
+# add repository contents to your system:
 RELEASE=$(lsb_release -cs)
 echo "deb http://apt.postgresql.org/pub/repos/apt/ ${RELEASE}"-pgdg main | sudo tee  /etc/apt/sources.list.d/pgdg.list
-#install and run PostgreSQL service
+
+# install and launch the postgresql service:
 sudo apt update
 sudo apt -y install postgresql-12
 sudo service postgresql start
 ```
 
-if all commands run successfully the result will be like:
-![postgresql](/images/postgreSQL-1.png)
+Once PostgreSQL is installed you may want to create a new user or set the password for the the main user. The instructions on the right panel will help to set the password for main postgresql user.
 
-Once PostgreSQL is installed you may want to create a new user or set the password for the the main user.
-
->The instructions below will help to set the password for main postgresql user.
+>PostgresSQL database configuration
 
 ```shell
 sudo su - postgres
@@ -196,33 +424,31 @@ psql
 \q
 ```
 
-Then, press “Ctrl+D” to return to main user console and connect to the database to create thingsboard DB.
+Then, press “Ctrl+D” to return to main user console and use commands in the right panl connect to the database to create thingsboard DB.
 
->connecting to database to create thingsboard DB.
+>Create thingsboard DB:
 
 ```shell
 psql -U postgres -d postgres -h 127.0.0.1 -W
 CREATE DATABASE thingsboard;
 \q
 ```
-<aside class="success">
-Result should look like this:
-</aside>
-![PostgreSQL-2](/images/postgreSQL-2.png)
 
+### Step.3 Thingsboard Database Configuration
 
-Now we should edit **ThingsBoard Configuration**, to do so use commands in right pannel.
+Use shell scripit command in the right panel to edit **thingsboard.conf** using **NANO editor**.
 
->ThingsBoard configuration
+>Edit thingsboard.conf
 
-```shell
+```shell 
 sudo nano /etc/thingsboard/conf/thingsboard.conf
 ```
-After openning add lines on the right pannel at the end of file!
 
->in the nano editor at the end of the file add these lines(go to ini panel):
+* Now add the lines in the right panel to configuration file:
 
-```ini
+>Lines to add to thingsboard configuration file
+
+```shell
 # DB Configuration 
 export DATABASE_TS_TYPE=sql
 export SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
@@ -234,67 +460,78 @@ export SPRING_DATASOURCE_PASSWORD=PUT_YOUR_POSTGRESQL_PASSWORD_HERE
 export SQL_POSTGRES_TS_KV_PARTITIONING=MONTHS
 ```
 
-<aside class="notice">
-Note that you sould write your entered password insted of **PUT_YOUR_POSTGRESQL_PASSWORD_HERE**!
-</aside>
-
-your thingsboard.conf in nano editor should look like this:
-![nano_editor](/images/nano_editor.png)
-
-use **CTRL+O** to save your changes, and use **CTRL+X** to exit nano editor.
+<aside class="notice"> Dont forget to change PUT_YOUR_POSTGRESQL_PASSWORD_HERE to your actual postgres user passwrd </aside>
 
 ### Step.4 Choose ThingsBoard queue service
-ThingsBoard is able to use various messaging systems/brokers for storing the messages and communication between ThingsBoard services.
+In this API doc we chose **In-memory** queue implementation.
 
-* **In Memory** queue implementation is built-in and default. It is useful for development(PoC) environments and is not suitable for production deployments or any sort of cluster deployments.
+**_NOTE:_**  In Memory queue is built-in and enabled by default. No additional configuration steps required.
 
-* **Kafka** is recommended for production deployments. This queue is used on the most of ThingsBoard production environments now. It is useful for both on-prem and private cloud deployments. It is also useful if you like to stay independent from your cloud provider. However, some providers also have managed services for Kafka. See AWS MSK for example.
+### Step.5 Run installation script
+Once ThingsBoard service is installed and DB configuration is updated, you can execute the shell script in the right pannel.
 
-* **RabbitMQ** is recommended if you don’t have much load and you already have experience with this messaging system.
-
-* **AWS SQS** is a fully managed message queuing service from AWS. Useful if you plan to deploy ThingsBoard on AWS.
-
-* **Google Pub/Sub** is a fully managed message queuing service from Google. Useful if you plan to deploy ThingsBoard on Google Cloud.
-
-* **Azure Service Bus** is a fully managed message queuing service from Azure. Useful if you plan to deploy ThingsBoard on Azure.
-
-* **Confluent Cloud** is a fully managed streaming platform based on Kafka. Useful for a cloud agnostic deployments.
-
-In Memory queue is built-in and enabled by default. No additional configuration steps required.
-
-In this API we use Memory queue!
-
-### Step 5. Run installation script
-Once ThingsBoard service is installed and DB configuration is updated, you can execute the script on right pannel:
-
->loadDemo option will load demo data: users, devices, assets, rules, widgets.
+>Command to use --loadDemo option to load demo data
 
 ```shell
+# --loadDemo option will load demo data: users, devices, assets, rules, widgets.
 sudo /usr/share/thingsboard/bin/install/install.sh --loadDemo
 ```
 
-You should see ThingsBoard installation starting as below:
-![installation_starting](/images/installation_starting.png)
+### Step.6 Starting Thingsboard service
+Execute the command in the right panel to start ThingsBoard.
 
-### Step 6. Start ThingsBoard service
-Execute the command to the right to start ThingsBoard.
-
->ThingsBoard starting command
+>Thingsboard service start
 
 ```shell
 sudo service thingsboard start
 ```
+
 Once started, you will be able to open Web UI using the following link:
-**http://localhost:8080/**
 
-Final result will be like:
-![thingsboard_service](/images/Thingsboard_service.png)
+* **http://localhost:8080/**
 
-You can use **email address** and **password** below to login:
+The following default credentials are available if you have specified –loadDemo during execution of the installation script:
 
-Email: sysadmin@thingsboard.org
+* System Administrator: sysadmin@thingsboard.org / sysadmin
+* Tenant Administrator: tenant@thingsboard.org / tenant
+* Customer User: customer@thingsboard.org / customer
 
-Password: sysadmin
 
-You should see a page like this:
-![thingsboard_service_2](/images/thingsBoard_service_2.png)
+Finally if you follow all steps correctly you should see thingsboard server ui:
+![Thingsboard-server](./images/thingsboard-uninstall-2.png)
+ 
+# Uninstalling Thingsboard 
+
+* To **check if thingsboard is installed** on your system follow instructions below.
+
+1-First start thingsboard service.
+
+2-Now you can connect to http://localhost:8080/ .
+
+![thingsboard-uninstall-1](./images/thingsboard-uninstall-1.png)
+![thingsboard-uninstall-2](./images/thingsboard-uninstall-2.png)
+
+>Shell commands to fully delete thingsboard from your system
+
+```shell
+#command to list thingsboard
+sudo dpkg -l | grep thingsboard 
+
+#commands to remove thingsboard
+sudo dpkg -r thingsboard
+sudo dpkg --purge thingsboard
+
+#you can delete thingsboard logs using command below
+cd /var/log
+sudo rm -rf thingsboard
+
+#commands to check if thingsboard is uninstalled
+sudo dpkg -l | grep thingsboard 
+sudo dpkg -p thingsboard
+```
+
+* To **uninstall thinsboard** from your system use shell script commands in right pannel.
+
+Now if you use thingsboard serivce command the result would be:
+
+![thingsboard-uninstall-3](./images/thingsboard-uninstall-3.png)
