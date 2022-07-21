@@ -20,6 +20,11 @@ meta:
     content: Documentation for what is ThingsBoard and how to use it
 ---
 
+**_Author:_** Sayyed Adel Mirsharji --- Hamta Sharif 
+
+**_Date And Time:_** Tuesday, 12 July 2022 --- سه شنبه ۱۴۰۱/۰۴/۲۱
+
+
 # Introduction
 
 Welcome to the **Hamta Sharif ThingsBoard API**! You can use our API to understannd what is **ThingsBoard** and how to use this open-source IoT platform in your IoT projects.
